@@ -29,7 +29,7 @@ router.get(uidPath, (req, res) => {
 router.post(uidPath, async (req, res, next) => {
   switch (req.interaction.prompt.name) {
     case 'register':
-      return validator.validate({ body: register })(req, res, (err) => {
+      return validator.validate({ body: register.schema })(req, res, (err) => {
         if (err) return next(err);
         return res.json('done');
       });
