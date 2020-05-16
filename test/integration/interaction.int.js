@@ -1,8 +1,12 @@
-var session = require('supertest-session');
-const app = require('../app');
-const registerSchema = require('../schemas/interaction/register');
+const session = require('supertest-session');
+const registerSchema = require('../../schemas/interaction/register');
 
-var testSession = null;
+let app;
+before(() => {
+  app = require('../../app');
+});
+
+let testSession = null;
 beforeEach(function () {
   testSession = session(app);
 });
@@ -16,7 +20,7 @@ describe('register', function () {
     await testSession
       .get(authRes.header.location)
       .expect('Content-Type', /json/)
-      .expect(200, { ...registerSchema });
+      .expect(200, registerSchema);
 
     await testSession
       .post(authRes.header.location)
