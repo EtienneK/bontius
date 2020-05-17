@@ -8,10 +8,23 @@
   <script src="/js/vendor/react.js" crossorigin></script>
   <script src="/js/vendor/react-dom.js" crossorigin></script>
   <script src="/js/vendor/react-jsonschema-form.js"></script>
+
+  <style>
+    #wrapper {
+      background: #eee;
+      max-width: 360px;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="container" id="form"></div>
+  <div class="container card p-4 mt-4 mb-4" id="wrapper">
+    <div class="text-center">
+      <img src="/img/logo-75x75.png" class="mb-4" width="75" height="75" />
+      <h3 class="mb-4">Create a new account</h3>
+    </div>
+    <div id="form"></div>
+  </div>
 </body>
 
 <script>
@@ -28,18 +41,33 @@
   };
   const Form = JSONSchemaForm.default;
   const schema = <%- JSON.stringify(schema) %>;
+  schema.title = '';
 
   const log = (type) => console.log.bind(console, type);
 
-  ReactDOM.render(e(
-    Form,
-    {
-      schema,
-      onChange: log("changed"),
-      onSubmit,
-      onError: log("changed")
-    }
-  ), document.getElementById('form'));
+  ReactDOM.render(
+    e(
+      Form, {
+        schema,
+        onChange: log("changed"),
+        onSubmit,
+        onError: log("errors"),
+        showErrorList: false
+      },
+      e(
+        'button', {
+          className: 'btn btn-success btn-lg btn-block'
+        },
+        'Create account'
+      ),
+      e(
+        'button', {
+          className: 'btn btn-danger btn-sm btn-block'
+        },
+        'Cancel'
+      )
+    ),
+    document.getElementById('form'));
 </script>
 
 </html>
