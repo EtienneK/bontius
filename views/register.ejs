@@ -4,15 +4,19 @@
 <head>
   <meta charset="utf-8">
   <title>Register</title>
-  <link rel="stylesheet" href="/css/main.css">
+
+  <script src="/js/vendor/nprogress.js" crossorigin></script>
   <script src="/js/vendor/react.js" crossorigin></script>
   <script src="/js/vendor/react-dom.js" crossorigin></script>
   <script src="/js/vendor/react-jsonschema-form.js"></script>
 
+  <link rel="stylesheet" href="/css/vendor/nprogress.css">
+  <link rel="stylesheet" href="/css/main.css">
+
   <style>
     #wrapper {
       background: #eee;
-      max-width: 360px;
+      max-width: 350px;
     }
   </style>
 </head>
@@ -23,28 +27,40 @@
       <img src="/img/logo-75x75.png" class="mb-4" width="75" height="75" />
       <h3 class="mb-4">Create a new account</h3>
     </div>
-    <div id="form"></div>
+    <div id="form" class="mb-4"></div>
+    <a class="btn btn-danger btn-sm btn-block" href="/interaction/<%= uid %>/abort">Cancel</a>
   </div>
 </body>
 
 <script>
-  const e = React.createElement;
+  let submitting = false;
+  function onSubmit({ formData }, e) {
+    if (submitting) return;
+    submitting = true;
+    NProgress.start();
 
-  const onSubmit = async ({ formData }, e) => {
-    const result = await fetch('', {
+    fetch('', {
       method: 'POST',
       headers: {
         'content-type': 'application/json;charset=utf-8'
       },
       body: JSON.stringify(formData)
-    })
+    }).then(result => {
+      submitting = false;
+      NProgress.done();
+    }).catch(error => {
+      submitting = false;
+      console.error(error);
+    });
   };
-  const Form = JSONSchemaForm.default;
+
   const schema = <%- JSON.stringify(schema) %>;
   schema.title = '';
 
   const log = (type) => console.log.bind(console, type);
 
+  const e = React.createElement;
+  const Form = JSONSchemaForm.default;
   ReactDOM.render(
     e(
       Form, {
@@ -59,12 +75,6 @@
           className: 'btn btn-success btn-lg btn-block'
         },
         'Create account'
-      ),
-      e(
-        'button', {
-          className: 'btn btn-danger btn-sm btn-block'
-        },
-        'Cancel'
       )
     ),
     document.getElementById('form'));

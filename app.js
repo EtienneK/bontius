@@ -1,3 +1,4 @@
+const compression = require('compression');
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
@@ -25,6 +26,7 @@ mongoose.connection.on('error', (err) => {
 /*
  * Express configuration.
  */
+app.use(compression());
 app.use(helmet());
 app.use(
   sassMiddleware({
@@ -35,6 +37,9 @@ app.use(
     prefix: '/css'
   })
 );
+
+app.use('/css/vendor/nprogress.css', express.static(__dirname + '/node_modules/nprogress/nprogress.css'));
+app.use('/js/vendor/nprogress.js', express.static(__dirname + '/node_modules/nprogress/nprogress.js'));
 app.use('/js/vendor/react.js', express.static(__dirname + '/node_modules/react/umd/react.production.min.js'));
 app.use('/js/vendor/react-dom.js', express.static(__dirname + '/node_modules/react-dom/umd/react-dom.production.min.js'));
 app.use('/js/vendor/react-jsonschema-form.js', express.static(__dirname + '/node_modules/react-jsonschema-form/dist/react-jsonschema-form.js'));

@@ -13,11 +13,13 @@
   "dependencies": {
     "bcrypt": "^4.0.1",
     "bootstrap": "^4.5.0",
+    "compression": "^1.7.4",
     "express": "^4.17.1",
     "express-json-validator-middleware": "^2.1.1",
     "helmet": "^3.22.0",
     "mongoose": "^5.9.14",
     "node-sass-middleware": "^0.11.0",
+    "nprogress": "^0.2.0",
     "oidc-provider": "^6.26.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

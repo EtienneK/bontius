@@ -10,14 +10,24 @@ const validator = new Validator({ allErrors: true });
 
 const uidPath = '/:uid';
 
-const render = (req, res) => {
-  if (req.get('accept') === 'application/json' || req.get('accept') === 'application/json;charset=utf-8') {
-    return res.json(register);
-  }
-  return res.render('register.ejs', register);
+function setNoCache(req, res, next) {
+  res.set('Pragma', 'no-cache');
+  res.set('Cache-Control', 'no-cache, no-store');
+  next();
 }
 
-router.all(uidPath, async (req, res, next) => {
+function render(req, res) {
+  const model = {
+    ...register,
+    uid: req.interaction.uid
+  };
+  if (req.get('accept') === 'application/json' || req.get('accept') === 'application/json;charset=utf-8') {
+    return res.json(model);
+  }
+  return res.render('register.ejs', model);
+}
+
+router.all(uidPath, setNoCache, async (req, res, next) => {
   try {
     req.interaction = await oidcProvider.interactionDetails(req, res);
     next();
@@ -41,6 +51,18 @@ router.post(uidPath, async (req, res, next) => {
         return res.json('done');
       });
     default: return undefined;
+  }
+});
+
+router.get(`${uidPath}/abort`, async (req, res, next) => {
+  try {
+    const result = {
+      error: 'access_denied',
+      error_description: 'End-User aborted interaction',
+    };
+    await oidcProvider.interactionFinished(req, res, result, { mergeWithLastSubmission: false });
+  } catch (err) {
+    next(err);
   }
 });
 
