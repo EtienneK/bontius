@@ -5,17 +5,18 @@
   <meta charset="utf-8">
   <title>Register</title>
   <link rel="stylesheet" href="/css/main.css">
-  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-  <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
-  <script src="https://unpkg.com/@rjsf/core/dist/react-jsonschema-form.js"></script>
+  <script src="/js/vendor/react.js" crossorigin></script>
+  <script src="/js/vendor/react-dom.js" crossorigin></script>
+  <script src="/js/vendor/react-jsonschema-form.js"></script>
 </head>
 
 <body>
   <div class="container" id="form"></div>
 </body>
 
-<script type="text/babel">
+<script>
+  const e = React.createElement;
+
   const onSubmit = async ({ formData }, e) => {
     const result = await fetch('', {
       method: 'POST',
@@ -30,12 +31,14 @@
 
   const log = (type) => console.log.bind(console, type);
 
-  ReactDOM.render((
-    <Form schema={schema}
-      onChange={log("changed")}
-      onSubmit={onSubmit}
-      onError={log("errors")}>
-    </Form>
+  ReactDOM.render(e(
+    Form,
+    {
+      schema,
+      onChange: log("changed"),
+      onSubmit,
+      onError: log("changed")
+    }
   ), document.getElementById('form'));
 </script>
 
