@@ -10,6 +10,13 @@ const validator = new Validator({ allErrors: true });
 
 const uidPath = '/:uid';
 
+const render = (req, res) => {
+  if (req.get('accept') === 'application/json' || req.get('accept') === 'application/json;charset=utf-8') {
+    return res.json(register);
+  }
+  return res.render('register.ejs', register);
+}
+
 router.all(uidPath, async (req, res, next) => {
   try {
     req.interaction = await oidcProvider.interactionDetails(req, res);
@@ -21,7 +28,7 @@ router.all(uidPath, async (req, res, next) => {
 
 router.get(uidPath, (req, res) => {
   switch (req.interaction.prompt.name) {
-    case 'register': return res.json(register);
+    case 'register': return render(req, res);
     default: return undefined;
   }
 });
